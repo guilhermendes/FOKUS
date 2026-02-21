@@ -19,7 +19,7 @@ const audioPlay = new Audio("/sons/play.wav");
 const audioTempoFinalizado = new Audio("/sons/beep.mp3");
 
 let startPauseBt = document.querySelector("#start-pause");
-let tempoDecorridoEmSegundos = 1500;
+let tempoDecorridoEmSegundos = 10;
 let intervaloId = null;
 musica.loop = true;
 
@@ -36,19 +36,19 @@ musicaFocoInput.addEventListener("change", () => {
 });
 
 focoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 1500;
+  tempoDecorridoEmSegundos = duracaoFoco;
   alterarContexto("foco");
   focoBt.classList.add("active");
 });
 
 curtoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 300;
+  tempoDecorridoEmSegundos = duracaoDescansoCurto;
   alterarContexto("descanso-curto");
   curtoBt.classList.add("active");
 });
 
 longoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 900;
+  tempoDecorridoEmSegundos = duracaoDescansoLongo;
   alterarContexto("descanso-longo");
   longoBt.classList.add("active");
 });
@@ -84,6 +84,11 @@ const contagemRegressiva = () => {
   if (tempoDecorridoEmSegundos <= 0) {
     //audioTempoFinalizado.play();
     alert("tempo finalizado");
+    const focoAtivo = html.getAttribute("data-contexto") == "foco";
+    if (focoAtivo) {
+      const evento = new CustomEvent("FocoFinalizado");
+      document.dispatchEvent(evento);
+    }
     zerar();
     return;
   }
